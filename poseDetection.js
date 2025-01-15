@@ -211,8 +211,17 @@ function drawSkeleton(keypoints, ctx) {
 
 function drawAngleArc(ctx, a, b, c, angle) {
     const radius = 40;
-    const startAngle = Math.atan2(a.y - b.y, a.x - b.x);
-    const endAngle = Math.atan2(c.y - b.y, c.x - b.x);
+    let startAngle, endAngle;
+    if (a.y < b.y) {
+        startAngle = Math.atan2(a.y - b.y, a.x - b.x);
+        endAngle = Math.atan2(c.y - b.y, c.x - b.x);
+    } else if (a.y > b.y) {
+        startAngle = Math.atan2(c.y - b.y, c.x - b.x);
+        endAngle = Math.atan2(a.y - b.y, a.x - b.x);
+    }
+    if (endAngle < startAngle) {
+        [startAngle, endAngle] = [endAngle, startAngle];
+    }
     ctx.beginPath();
     ctx.arc(b.x, b.y, radius, startAngle, endAngle);
     ctx.strokeStyle = 'yellow';
