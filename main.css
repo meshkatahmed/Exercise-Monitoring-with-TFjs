@@ -1,0 +1,134 @@
+
+body {
+    text-align: center;
+    display: flex;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+video {
+    margin-top: 50px;
+}
+
+canvas {
+    margin-top: 50px;
+    border: 2px solid black;
+}
+
+button {
+    padding: 10px;
+    margin: 5px;
+    border-radius: 5%;
+    color: black;
+}
+#startButton {
+    background-color: aqua;
+}
+#stopButton {
+    background-color: aquamarine;
+}
+
+#main-content {
+    margin: auto;
+}
+
+#header-div {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    color: black;
+    justify-content: center;
+}
+
+
+
+.menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+li {
+    position: relative;
+    margin: 0 10px;
+    color: white;
+}
+
+li a {
+    color: white;
+}
+
+.menu a {
+    text-decoration: none;
+    color: black;
+    padding: 10px 15px;
+    display: block;
+}
+
+.menu a:hover {
+    background-color: #555;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #444;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown-menu li a {
+    padding: 10px;
+    color: white;
+}
+
+.dropdown-menu li a:hover {
+    background-color: #666;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+#sidebar {
+    width: 250px;
+    height: 100vh;
+    background: #333;
+    color: white;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+}
+
+#sidebar a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+}
+
+#sidebar .dropdown-menu {
+    list-style: none;
+    padding: 0;
+    display: none;
+}
+
+#sidebar .dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+#header-div,
+#middle-div,
+#footer-div {
+    margin: 20px;
+    flex: 1;
+}
+
+.menu li {
+    list-style: none;
+    padding: 10px 0;
+}
