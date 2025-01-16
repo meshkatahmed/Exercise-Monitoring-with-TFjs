@@ -1,90 +1,162 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Real-Time Pose Detection</title>
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
+  </head>
 
-<body class="bg-gray-100 text-center font-sans">
-    <header class="flex bg-gray-800 text-white p-4 items-center justify-center" id="header-div">
-        <img src="assests/colorLogo.34a6e164.svg" alt="DML Logo" class="w-12 h-12 mr-4 inline-block" />
-        <h1 class="text-2xl font-bold">Real-time exercise monitoring</h1>
+  <body class="bg-gray-100 text-center font-sans">
+    <header
+      class="flex bg-gray-800 text-white p-4 items-center justify-center"
+      id="header-div"
+    >
+      <img
+        src="assests/colorLogo.34a6e164.svg"
+        alt="DML Logo"
+        class="w-12 h-12 ml-4 mr-4 inline-block"
+      />
+      <h1 class="text-2xl font-bold ml-4 mr-4">
+        Real-time exercise monitoring
+      </h1>
+
+      <!-- Voiceover toggler -->
+      <div class="flex items-center space-x-4">
+        <span id="voiceover-status" class="text-gray-700 font-medium"
+          >Voice Assistant: Off</span
+        >
+        <label
+          for="voiceover-toggle"
+          class="relative inline-flex items-center cursor-pointer"
+        >
+          <input type="checkbox" id="voiceover-toggle" class="sr-only peer" />
+          <div
+            class="w-14 h-8 bg-gray-200 rounded-full peer-focus:ring-4 peer-focus:ring-blue-300 peer dark:bg-gray-700 peer-checked:bg-blue-600"
+          ></div>
+          <div
+            class="absolute left-1 top-1 w-6 h-6 bg-white rounded-full border border-gray-300 peer-checked:translate-x-6 peer-checked:border-white transition-all"
+          ></div>
+        </label>
+      </div>
     </header>
 
     <main class="grid grid-cols-3 md:grid-cols-12 gap-8 p-6">
-        <div class="col-span-1 md:col-span-3 w-full space-y-7">
-            <section class="bg-white rounded-lg shadow p-6 h-[320px]">
-                <h2 class="text-xl font-bold mb-4">Provide Your Details</h2>
-                <form id="processing-form">
-                    <label for="height" class="block text-left text-gray-700 font-medium mb-1">
-                        Enter Your Height (cm)*:
-                    </label>
-                    <input type="number" id="height" name="height" placeholder="e.g., 170" required
-                        class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500" />
-                    <p id="height-alert" class="text-red-700 text-sm mt-1 text-left">This field is required.</p>
+      <div class="col-span-1 md:col-span-3 w-full space-y-7">
+        <section class="bg-white rounded-lg shadow p-6 h-[320px]">
+          <h2 class="text-xl font-bold mb-4">Provide Your Details</h2>
+          <form id="processing-form">
+            <label
+              for="height"
+              class="block text-left text-gray-700 font-medium mb-1"
+            >
+              Enter Your Height (cm)*:
+            </label>
+            <input
+              type="number"
+              id="height"
+              name="height"
+              placeholder="e.g., 170"
+              required
+              class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+            />
+            <p id="height-alert" class="text-red-700 text-sm mt-1 text-left">
+              This field is required.
+            </p>
 
-                    <label for="exercise" class="mt-4 block text-left text-gray-700 font-medium mb-1">
-                        Select Exercise*
-                    </label>
-                    <select id="exercise" name="exercise" required
-                        class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500">
-                        <option value=null disabled selected>Select an exercise</option>
-                        <option id="exercise-1" value="Left Bicep Curl">Left Bicep Curl</option>
-                        <option id="exercise-2" value="Right Bicep Curl">Right Bicep Curl</option>
-                        <option id="exercise-3" value="Push Up">Push Up</option>
-                        <option id="exercise-4" value="Squat">Squat</option>
-                    </select>
-                    <p id="exercise-alert" class="text-red-700 text-sm hidden mt-1">This field is required.</p>
-                </form>
-                <div id="recording-controls" class="controls mt-4">
-                    <button id="start-monitoring"
-                        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none mr-2 disabled:bg-gray-400 disabled:cursor-not-allowed">
-                        Start Monitoring
-                    </button>
-                    <button id="stop-monitoring"
-                        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none disabled:bg-gray-400 disabled:cursor-not-allowed"
-                        disabled>
-                        Stop Monitoring
-                    </button>
-                </div>
-            </section>
-            <section id = 'board-container' class="bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg shadow-lg p-8 h-[300px] flex flex-col items-center justify-center text-white space-y-4 border border-blue-300">
-                <p>Enter your height above and select an exercise from the menu</p>
-            </section>
-        </div>
+            <label
+              for="exercise"
+              class="mt-4 block text-left text-gray-700 font-medium mb-1"
+            >
+              Select Exercise*
+            </label>
+            <select
+              id="exercise"
+              name="exercise"
+              required
+              class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+            >
+              <option value="null" disabled selected>Select an exercise</option>
+              <option id="exercise-1" value="Left Bicep Curl">
+                Left Bicep Curl
+              </option>
+              <option id="exercise-2" value="Right Bicep Curl">
+                Right Bicep Curl
+              </option>
+              <option id="exercise-3" value="Push Up">Push Up</option>
+              <option id="exercise-4" value="Squat">Squat</option>
+            </select>
+            <p id="exercise-alert" class="text-red-700 text-sm hidden mt-1">
+              This field is required.
+            </p>
+          </form>
+          <div id="recording-controls" class="controls mt-4">
+            <button
+              id="start-monitoring"
+              class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none mr-2 disabled:bg-gray-400 disabled:cursor-not-allowed"
+            >
+              Start Monitoring
+            </button>
+            <button
+              id="stop-monitoring"
+              class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none disabled:bg-gray-400 disabled:cursor-not-allowed"
+              disabled
+            >
+              Stop Monitoring
+            </button>
+          </div>
+        </section>
+        <section
+          id="board-container"
+          class="bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg shadow-lg p-8 h-[300px] flex flex-col items-center justify-center text-white space-y-4 border border-blue-300"
+        >
+          <p>Enter your height above and select an exercise from the menu</p>
+        </section>
+      </div>
 
-        <div class="col-span-1 md:col-span-6 w-full space-y-7">
-            <section class="bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center h-[648px]">
-                <div class="relative border-2 border-gray-800 rounded shadow" style="width: 639.9px; height: 480px;">
-                    <video id="video" autoplay playsinline style="display: none;"></video>
-                    <canvas id="canvas"></canvas>
-                </div>
-            </section>
-        </div>
-        <div class="col-span-1 md:col-span-3 max-w-3xl w-full space-y-4">
-            <section class="bg-white rounded-lg shadow p-6 h-full">
-                <h2 class="text-xl font-bold mb-4">Exercise Preview</h2>
-                <div id="exercise-preview-container" class="text-center align-center justify-center">
-                    <h3 id="exercise-name" class="text-lg font-semibold mb-2"></h3>
-                    <img 
-                        id="exercise-preview" 
-                        alt="Exercise Preview GIF" 
-                        src="https://cdn.deepmindlabs.ai/images/rom/LeftandRightElbowFlexion.gif" 
-                        class="h-[350px] mx-auto" 
-                    />
-                </div>
-                <h2 class="text-left">Instructions:</h2>
-                <br>
-                <div id="instructions-container">
-                    <p class="text-left text-700">1) Make sure that your whole body is visible.</p>
-                </div>
-            </section>
-        </div>
+      <div class="col-span-1 md:col-span-6 w-full space-y-7">
+        <section
+          class="bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center h-[648px]"
+        >
+          <div
+            class="relative border-2 border-gray-800 rounded shadow"
+            style="width: 639.9px; height: 480px"
+          >
+            <video
+              id="video"
+              autoplay
+              playsinline
+              style="display: none"
+            ></video>
+            <canvas id="canvas"></canvas>
+          </div>
+        </section>
+      </div>
+      <div class="col-span-1 md:col-span-3 max-w-3xl w-full space-y-4">
+        <section class="bg-white rounded-lg shadow p-6 h-full">
+          <h2 class="text-xl font-bold mb-4">Exercise Preview</h2>
+          <div
+            id="exercise-preview-container"
+            class="text-center align-center justify-center"
+          >
+            <h3 id="exercise-name" class="text-lg font-semibold mb-2"></h3>
+            <img
+              id="exercise-preview"
+              alt="Exercise Preview GIF"
+              src="https://cdn.deepmindlabs.ai/images/rom/LeftandRightElbowFlexion.gif"
+              class="h-[350px] mx-auto"
+            />
+          </div>
+          <h2 class="text-left">Instructions:</h2>
+          <br />
+          <div id="instructions-container">
+            <p class="text-left text-700">
+              1) Make sure that your whole body is visible.
+            </p>
+          </div>
+        </section>
+      </div>
     </main>
     <script type="module" src="poseDetection.js"></script>
-</body>
-
+  </body>
 </html>
