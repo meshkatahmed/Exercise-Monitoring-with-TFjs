@@ -9,10 +9,10 @@ let repCount;
 let exerciseStage;
 
 const exercisePreviewMap = {
-    "Left Bicep Curl": '',
-    "Right Bicep Curl": '',
-    "Push Up": '',
-    "Squat": '',
+    "Left Bicep Curl": 'https://cdn.deepmindlabs.ai/images/rom/LeftandRightElbowFlexion.gif',
+    "Right Bicep Curl": 'https://cdn.deepmindlabs.ai/images/rom/LeftandRightElbowFlexion.gif',
+    "Push Up": 'https://cdn.deepmindlabs.ai/images/rom/LeftandRightElbowFlexion.gif',
+    "Squat": 'assests/kneeSquat.gif',
 }
 const instructionsMap = {
     "Left Bicep Curl": ['Face the camera from left side of your body', 'Make sure that your left hand is fully visible', 'Click Start Monitoring'],
@@ -24,8 +24,7 @@ const instructionsMap = {
 const exerciseDropdown = document.getElementById('exercise');
 const startButton = document.getElementById('start-monitoring');
 const stopButton = document.getElementById('stop-monitoring');
-const repsValue = document.getElementById('reps-value');
-const stageValue = document.getElementById('stage-value');
+const exercisePreview = document.getElementById('exercise-preview');
 const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
 const height = document.getElementById('height');
@@ -56,8 +55,10 @@ const fetchData = async () => {
 
 fetchData();
 
+// Event listener for the change exercise
 exerciseDropdown.addEventListener('change', () => {
     selectedExercise = exerciseDropdown.value;
+    exercisePreview.src = exercisePreviewMap[selectedExercise];
     startButton.disabled = false;
     stopButton.disabled = true;
     isMonitoring = false;
