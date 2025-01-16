@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Exercise Monitoring App</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="icon" href="assests/colorLogo.34a6e164.svg" type="image/x-icon" />
+</head>
+<body>
+    <header class="bg-gray-800 text-white p-4">
+        <div class="flex items-center justify-center">
+          <img src="assests/colorLogo.34a6e164.svg" alt="DML Logo" class="w-12 h-12 mr-4 inline-block" />
+          <h1 class="text-2xl font-bold">DML Real-Time Home Exercise Monitoring</h1>
+        </div>
+    </header>
+    <div class="bg-gray-100 flex items-center justify-center h-screen">
+        <div class="bg-white p-8 rounded shadow-md w-full max-w-sm">
+            <h2 class="text-2xl font-bold mb-6">Login</h2>
+            <form id="loginForm">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="UserNameOrEmailAddress">Username or Email</label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="UserNameOrEmailAddress" type="text" placeholder="Username or Email" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="password">Password</label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="******************" required>
+                </div>
+                <div class="flex items-center justify-between">
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">Sign In</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie/dist/js.cookie.min.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const UserNameOrEmailAddress = document.getElementById('UserNameOrEmailAddress').value;
+            const password = document.getElementById('password').value;
+
+            const params = new URLSearchParams();
+            params.append('UserNameOrEmailAddress', UserNameOrEmailAddress);
+            params.append('Password', password);
+
+            axios.post('https://api.deepmindlabs.ai/api/app/auth/login', params, {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+            .then(response => {
+                console.log('No CORS');
+                const data = response.data;
+                const accessToken = data.accessToken;
+                const decodedToken = jwt_decode(accessToken);
+                const expirationTime = decodedToken.exp;
+
+                // Set the expiration time in cookies
+                Cookies.set('expirationTime', expirationTime, { expires: new Date(expirationTime * 1000) });
+
+                // Set the access token in cookies
+                Cookies.set('accessToken', accessToken, { expires: new Date(expirationTime * 1000) });
+
+                // Redirect to a new page
+                window.location.href = 'index.html';
+            })
+            .catch(error => {
+                console.error('There was an error!', error);
+                if (error.response && error.response.status === 403) {
+                    alert('Access forbidden. Please check your credentials or contact support.');
+                } else {
+                    alert('An error occurred. Please try again later.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

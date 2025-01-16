@@ -31,6 +31,7 @@ const exercisePreviewMap = {
     "https://cdn.deepmindlabs.ai/images/rom/LeftandRightElbowFlexion.gif",
   Squat: "assests/kneeSquat.gif",
 };
+
 const exerciseInstructionsMap = {
   "Left Bicep Curl": [
     "Face the camera from left side of your body",
@@ -53,8 +54,6 @@ const exerciseInstructionsMap = {
     "Click Start Monitoring",
   ],
 };
-
-
 
 // Data Fetching through API
 const fetchData = async () => {
@@ -89,8 +88,6 @@ function speak(text) {
   utterance.pitch = 1;
   synth.speak(utterance);
 }
-
-
 
 // Voiceover Toggler
 voiceoverToggle.addEventListener("change", () => {
@@ -151,6 +148,29 @@ async function initializeCamera() {
     video.style.width = "100%";
     video.style.height = "100%";
 
+    // Set the canvas element styles
+    canvas.style.position = "absolute";
+    canvas.style.top = "0";
+    canvas.style.left = "0";
+    canvas.style.zIndex = "2";
+    canvas.style.width = "100%";
+    canvas.style.height = "100%";
+
+    const ctx = canvas.getContext("2d");
+
+    // Function to update the canvas with the mirrored video feed
+    function updateCanvasForMirroredVideoFeed() {
+      ctx.save(); // Save the current context state
+      ctx.translate(canvas.width, 0); // Translate to the right edge of the canvas
+      ctx.scale(-1, 1); // Flip the context horizontally
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height); // Draw the video feed mirrored
+      ctx.restore(); // Restore the original context state
+      requestAnimationFrame(updateCanvasForMirroredVideoFeed); // Schedule the next update
+    }
+
+    // Start updating the canvas
+    updateCanvasForMirroredVideoFeed();
+
     // Read Board
     speak(boardContainer.firstElementChild.innerText);
   } catch (err) {
@@ -175,13 +195,6 @@ async function startMonitoring() {
     if (selectedExercise) {
       repCount = 0;
       exerciseStage = "Down";
-      // Set the canvas element styles
-      canvas.style.position = "absolute";
-      canvas.style.top = "0";
-      canvas.style.left = "0";
-      canvas.style.zIndex = "2";
-      canvas.style.width = "100%";
-      canvas.style.height = "100%";
 
       // Ensure the video dimensions are valid
       if (video.videoWidth > 0 && video.videoHeight > 0) {
@@ -211,34 +224,30 @@ async function startMonitoring() {
   }
 }
 
-async function stopMonitoring() {
-  startButton.disabled = false;
-  stopButton.disabled = true;
-  boardContainer.innerHTML = "";
-  const pElement = document.createElement("p");
-  pElement.innerText =
-    "See exercise preview and read the instructions carefully";
-  boardContainer.appendChild(pElement);
-  const canvas = document.getElementById("canvas");
-  const ctx = canvas.getContext("2d");
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  startButton.style.display = "inline-block";
-  stopButton.style.display = "inline-block";
-  console.log("Stopped Monitoring");
-}
-
 async function detectPose() {
   const ctx = canvas.getContext("2d");
 
   async function runDetection() {
+    if (!isMonitoring) return;
+
     const poses = await detector.estimatePoses(video);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Mirror the canvas horizontally
+    ctx.save(); // Save the current context state
+    ctx.translate(canvas.width, 0); // Translate to the right edge of the canvas
+    ctx.scale(-1, 1); // Flip the context horizontally
+
+    // Draw the video feed mirrored
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     poses.forEach((pose) => {
       drawKeypoints(pose.keypoints, ctx);
       drawSkeleton(pose.keypoints, ctx);
       calculateAngleAndCountReps(pose.keypoints, ctx, selectedExercise);
     });
+    ctx.restore(); // Restore the original context state
+
     requestAnimationFrame(runDetection);
   }
   runDetection();
@@ -274,37 +283,6 @@ function drawSkeleton(keypoints, ctx) {
       ctx.stroke();
     }
   });
-}
-
-function drawAngleArc(ctx, a, b, c, angle) {
-  const radius = 40;
-  let startAngle, endAngle;
-  if (a.y < b.y) {
-    startAngle = Math.atan2(a.y - b.y, a.x - b.x);
-    endAngle = Math.atan2(c.y - b.y, c.x - b.x);
-  } else if (a.y > b.y) {
-    startAngle = Math.atan2(c.y - b.y, c.x - b.x);
-    endAngle = Math.atan2(a.y - b.y, a.x - b.x);
-  }
-  if (endAngle < startAngle) {
-    [startAngle, endAngle] = [endAngle, startAngle];
-  }
-  ctx.beginPath();
-  ctx.arc(b.x, b.y, radius, startAngle, endAngle);
-  ctx.strokeStyle = "yellow";
-  ctx.lineWidth = 2;
-  ctx.stroke();
-  ctx.fillStyle = "yellow";
-  ctx.font = "20px Arial";
-  ctx.fillText(`${Math.round(angle)}°`, b.x + radius / 2, b.y - radius / 2);
-}
-
-function calculateAngle(a, b, c) {
-  const radians =
-    Math.atan2(c.y - b.y, c.x - b.x) - Math.atan2(a.y - b.y, a.x - b.x);
-  let angle = Math.abs((radians * 180.0) / Math.PI);
-  if (angle > 180) angle = 360 - angle;
-  return angle;
 }
 
 function calculateAngleAndCountReps(keypoints, ctx, exercise) {
@@ -410,6 +388,53 @@ function calculateAngleAndCountReps(keypoints, ctx, exercise) {
     boardContainer.appendChild(pElement1);
     boardContainer.appendChild(pElement2);
   }
+}
+
+function calculateAngle(a, b, c) {
+  const radians =
+    Math.atan2(c.y - b.y, c.x - b.x) - Math.atan2(a.y - b.y, a.x - b.x);
+  let angle = Math.abs((radians * 180.0) / Math.PI);
+  if (angle > 180) angle = 360 - angle;
+  return angle;
+}
+
+function drawAngleArc(ctx, a, b, c, angle) {
+  const radius = 40;
+  let startAngle, endAngle;
+  if (a.y < b.y) {
+    startAngle = Math.atan2(a.y - b.y, a.x - b.x);
+    endAngle = Math.atan2(c.y - b.y, c.x - b.x);
+  } else if (a.y > b.y) {
+    startAngle = Math.atan2(c.y - b.y, c.x - b.x);
+    endAngle = Math.atan2(a.y - b.y, a.x - b.x);
+  }
+  if (endAngle < startAngle) {
+    [startAngle, endAngle] = [endAngle, startAngle];
+  }
+  ctx.beginPath();
+  ctx.arc(b.x, b.y, radius, startAngle, endAngle);
+  ctx.strokeStyle = "yellow";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.fillStyle = "yellow";
+  ctx.font = "20px Arial";
+  ctx.fillText(`${Math.round(angle)}°`, b.x + radius / 2, b.y - radius / 2);
+}
+
+async function stopMonitoring() {
+  startButton.disabled = false;
+  stopButton.disabled = true;
+  boardContainer.innerHTML = "";
+  const pElement = document.createElement("p");
+  pElement.innerText =
+    "See exercise preview and read the instructions carefully";
+  boardContainer.appendChild(pElement);
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  startButton.style.display = "inline-block";
+  stopButton.style.display = "inline-block";
+  console.log("Stopped Monitoring");
 }
 
 startButton.addEventListener("click", async () => {

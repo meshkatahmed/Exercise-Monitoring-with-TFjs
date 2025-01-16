@@ -3,8 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Real-Time Pose Detection</title>
+    <title>Home Exercise Monitoring App</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Js Cookie library -->
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie/dist/js.cookie.min.js"></script>
   </head>
 
   <body class="bg-gray-100 text-center font-sans">
@@ -18,7 +20,7 @@
         class="w-12 h-12 ml-4 mr-4 inline-block"
       />
       <h1 class="text-2xl font-bold ml-4 mr-4">
-        Real-time exercise monitoring
+        DML Real-Time Home Exercise Monitoring
       </h1>
 
       <!-- Voiceover toggler -->
@@ -39,6 +41,11 @@
           ></div>
         </label>
       </div>
+
+      <!-- Logout Button -->
+      <button id="logout-button" class="bg-purple-500 hover:bg-blue-700 text-white font-bold py-2 px-4 ml-4 mr-4 rounded focus:outline-none focus:shadow-outline">
+        Logout
+      </button>
     </header>
 
     <main class="grid grid-cols-3 md:grid-cols-12 gap-8 p-6">
@@ -158,5 +165,20 @@
       </div>
     </main>
     <script type="module" src="poseDetection.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const accessToken = Cookies.get('accessToken');
+          if (!accessToken) {
+            window.location.href = 'login.html'; // Redirect to the login page
+          }
+    
+          // Logout button functionality
+          document.getElementById('logout-button').addEventListener('click', function() {
+            Cookies.remove('accessToken');
+            Cookies.remove('expirationTime');
+            window.location.href = 'login.html'; // Redirect to the login page
+          });
+        });
+      </script>
   </body>
 </html>
