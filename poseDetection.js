@@ -69,12 +69,13 @@ exerciseDropdown.addEventListener('change', () => {
     boardContainer.appendChild(pElement);
 
     instructionsContainer.innerHTML = "";
-    for (let i = 0; i < instructionsMap[selectedExercise].length; i++) {
+    let instructions = instructionsMap[selectedExercise];
+    instructions.forEach((instruction,index) => {
         const pElement = document.createElement('p');
         pElement.className = 'text-left';
-        pElement.innerText = `${i + 1}) ${instructionsMap[selectedExercise][i]}`;
+        pElement.innerText = `${index + 1}) ${instruction}`;
         instructionsContainer.appendChild(pElement);
-    }
+    });
 });
 
 // Initialize the camera stream when the page loads
