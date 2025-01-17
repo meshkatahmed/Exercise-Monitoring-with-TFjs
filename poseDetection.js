@@ -27,9 +27,8 @@ const exercisePreviewMap = {
     "https://cdn.deepmindlabs.ai/images/rom/LeftandRightElbowFlexion.gif",
   "Right Bicep Curl":
     "https://cdn.deepmindlabs.ai/images/rom/LeftandRightElbowFlexion.gif",
-  "Push Up":
-    "https://cdn.deepmindlabs.ai/images/rom/LeftandRightElbowFlexion.gif",
-  Squat: "assests/kneeSquat.gif",
+  "Push Up": "assests/pushUp.gif",
+  "Squat": "assests/kneeSquat.gif",
 };
 
 const exerciseInstructionsMap = {
@@ -48,7 +47,7 @@ const exerciseInstructionsMap = {
     "Make sure that your full body is visible",
     "Click Start Monitoring",
   ],
-  Squat: [
+  "Squat": [
     "Face the camera from left side of your body",
     "Make sure that your full body is visible",
     "Click Start Monitoring",
@@ -156,20 +155,20 @@ async function initializeCamera() {
     canvas.style.width = "100%";
     canvas.style.height = "100%";
 
-    const ctx = canvas.getContext("2d");
+    // const ctx = canvas.getContext("2d");
 
     // Function to update the canvas with the mirrored video feed
-    function updateCanvasForMirroredVideoFeed() {
-      ctx.save(); // Save the current context state
-      ctx.translate(canvas.width, 0); // Translate to the right edge of the canvas
-      ctx.scale(-1, 1); // Flip the context horizontally
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height); // Draw the video feed mirrored
-      ctx.restore(); // Restore the original context state
-      requestAnimationFrame(updateCanvasForMirroredVideoFeed); // Schedule the next update
-    }
+    // function updateCanvasForMirroredVideoFeed() {
+    //   ctx.save(); // Save the current context state
+    //   ctx.translate(canvas.width, 0); // Translate to the right edge of the canvas
+    //   ctx.scale(-1, 1); // Flip the context horizontally
+    //   ctx.drawImage(video, 0, 0, canvas.width, canvas.height); // Draw the video feed mirrored
+    //   ctx.restore(); // Restore the original context state
+    //   requestAnimationFrame(updateCanvasForMirroredVideoFeed); // Schedule the next update
+    // }
 
     // Start updating the canvas
-    updateCanvasForMirroredVideoFeed();
+    // updateCanvasForMirroredVideoFeed();
 
     // Read Board
     speak(boardContainer.firstElementChild.innerText);
@@ -202,16 +201,17 @@ async function startMonitoring() {
         canvas.height = video.videoHeight;
         console.log("Canvas width set to:", canvas.width);
         console.log("Canvas height set to:", canvas.height);
+        isMonitoring = true;
       } else {
         console.error(
           "Invalid video dimensions:",
           video.videoWidth,
           video.videoHeight
         );
+        return;
       }
 
       // Start pose detection
-      isMonitoring = true;
       detectPose();
 
       startButton.disabled = true;
@@ -416,12 +416,18 @@ function drawAngleArc(ctx, a, b, c, angle) {
   ctx.strokeStyle = "yellow";
   ctx.lineWidth = 2;
   ctx.stroke();
+
+  // Temporarily reverse the mirroring for text
+  ctx.save(); // Save the current state
+  ctx.scale(-1, 1); // Flip horizontally
   ctx.fillStyle = "yellow";
   ctx.font = "20px Arial";
-  ctx.fillText(`${Math.round(angle)}°`, b.x + radius / 2, b.y - radius / 2);
+  ctx.fillText(`${Math.round(angle)}°`, -(b.x + (radius / 2) + 60), b.y - (radius / 2) + 20);
+  ctx.restore(); // Restore the original state
 }
 
 async function stopMonitoring() {
+  isMonitoring = false;
   startButton.disabled = false;
   stopButton.disabled = true;
   boardContainer.innerHTML = "";
