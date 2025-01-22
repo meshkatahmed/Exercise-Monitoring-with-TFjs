@@ -23,12 +23,10 @@ const voiceoverToggle = document.getElementById("voiceover-toggle");
 const voiceoverStatus = document.getElementById("voiceover-status");
 
 const exercisePreviewMap = {
-  "Left Bicep Curl":
-    "https://cdn.deepmindlabs.ai/images/rom/LeftandRightElbowFlexion.gif",
-  "Right Bicep Curl":
-    "https://cdn.deepmindlabs.ai/images/rom/LeftandRightElbowFlexion.gif",
+  "Left Bicep Curl": "assests/Left Bicep Curl.gif",
+  "Right Bicep Curl": "assests/Right Bicep Curl.gif",
   "Push Up": "assests/pushUp.gif",
-  "Squat": "assests/kneeSquat.gif",
+  "Knee Squat": "assests/kneeSquat.gif",
 };
 
 const exerciseInstructionsMap = {
@@ -47,7 +45,7 @@ const exerciseInstructionsMap = {
     "Make sure that your full body is visible",
     "Click Start Monitoring",
   ],
-  "Squat": [
+  "Knee Squat": [
     "Face the camera from left side of your body",
     "Make sure that your full body is visible",
     "Click Start Monitoring",
@@ -78,15 +76,15 @@ const fetchData = async () => {
 fetchData();
 
 // Text to Speech for voiceover
-function speak(text) {
-  if (isMuted) return;
-  const synth = window.speechSynthesis;
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "en-US";
-  utterance.rate = 1;
-  utterance.pitch = 1;
-  synth.speak(utterance);
-}
+// function speak(text) {
+//   if (isMuted) return;
+//   const synth = window.speechSynthesis;
+//   const utterance = new SpeechSynthesisUtterance(text);
+//   utterance.lang = "en-US";
+//   utterance.rate = 1;
+//   utterance.pitch = 1;
+//   synth.speak(utterance);
+// }
 
 // Voiceover Toggler
 voiceoverToggle.addEventListener("change", () => {
@@ -102,7 +100,7 @@ voiceoverToggle.addEventListener("change", () => {
 // Event listener for the change exercise
 exerciseDropdown.addEventListener("change", () => {
   selectedExercise = exerciseDropdown.value;
-  speak(`Selected exercise is ${selectedExercise}`);
+  // speak(`Selected exercise is ${selectedExercise}`);
   exercisePreview.src = exercisePreviewMap[selectedExercise];
   startButton.disabled = false;
   stopButton.disabled = true;
@@ -113,7 +111,7 @@ exerciseDropdown.addEventListener("change", () => {
   let textOnBoard = `See exercise preview on the right and read the instructions carefully`;
   pElement.innerText = textOnBoard;
   boardContainer.appendChild(pElement);
-  speak(textOnBoard);
+  // speak(textOnBoard);
 
   instructionsContainer.innerHTML = "";
   let instructions = exerciseInstructionsMap[selectedExercise];
@@ -122,7 +120,7 @@ exerciseDropdown.addEventListener("change", () => {
     pElement.className = "text-left";
     pElement.innerText = `${index + 1}) ${instruction}`;
     instructionsContainer.appendChild(pElement);
-    speak(instruction);
+    // speak(instruction);
   });
 });
 
@@ -171,7 +169,7 @@ async function initializeCamera() {
     // updateCanvasForMirroredVideoFeed();
 
     // Read Board
-    speak(boardContainer.firstElementChild.innerText);
+    // speak(boardContainer.firstElementChild.innerText);
   } catch (err) {
     console.error("Error accessing the webcam:", err);
     alert(
@@ -308,13 +306,13 @@ function calculateAngleAndCountReps(keypoints, ctx, exercise) {
         if (angle > 150 && exerciseStage === "Up") {
           exerciseStage = "Down";
           repCount++;
-          speak(`Good Job! Total repetitions: ${reps}. Keep going.`);
+          // speak(`Good Job! Total repetitions: ${reps}. Keep going.`);
         }
         if (angle < 90 && exerciseStage === "Down") {
           exerciseStage = "Up";
-          speak(`You are in the up position.`);
+          // speak(`You are in the up position.`);
         }
-        drawAngleArc(ctx, leftWrist, leftElbow, leftShoulder, angle);
+        drawAngleArc(ctx, leftWrist, leftElbow, leftShoulder, "left", angle);
       }
       break;
     case "Right Bicep Curl":
@@ -327,13 +325,20 @@ function calculateAngleAndCountReps(keypoints, ctx, exercise) {
         if (angle > 150 && exerciseStage === "Up") {
           exerciseStage = "Down";
           repCount++;
-          speak(`Good Job! Total repetitions: ${reps}. Keep going.`);
+          // speak(`Good Job! Total repetitions: ${reps}. Keep going.`);
         }
         if (angle < 90 && exerciseStage === "Down") {
           exerciseStage = "Up";
-          speak(`You are in the up position.`);
+          // speak(`You are in the up position.`);
         }
-        drawAngleArc(ctx, rightShoulder, rightElbow, rightWrist, angle);
+        drawAngleArc(
+          ctx,
+          rightShoulder,
+          rightElbow,
+          rightWrist,
+          "right",
+          angle
+        );
       }
       break;
     case "Push Up":
@@ -347,16 +352,16 @@ function calculateAngleAndCountReps(keypoints, ctx, exercise) {
         if (angle > 150 && exerciseStage === "Up") {
           exerciseStage = "Down";
           repCount++;
-          speak(`Good Job! Total repetitions: ${reps}. Keep going.`);
+          // speak(`Good Job! Total repetitions: ${reps}. Keep going.`);
         }
         if (angle < 90 && exerciseStage === "Down") {
           exerciseStage = "Up";
-          speak(`You are in the up position.`);
+          // speak(`You are in the up position.`);
         }
-        drawAngleArc(ctx, leftWrist, leftElbow, leftShoulder, angle);
+        drawAngleArc(ctx, leftWrist, leftElbow, leftShoulder, "left", angle);
       }
       break;
-    case "Squat":
+    case "Knee Squat":
       if (
         leftHip.score > 0.2 &&
         leftKnee.score > 0.2 &&
@@ -366,13 +371,13 @@ function calculateAngleAndCountReps(keypoints, ctx, exercise) {
         if (angle > 150 && exerciseStage === "Up") {
           exerciseStage = "Down";
           repCount++;
-          speak(`Good Job! Total repetitions: ${reps}. Keep going.`);
+          // speak(`Good Job! Total repetitions: ${reps}. Keep going.`);
         }
         if (angle < 90 && exerciseStage === "Down") {
           exerciseStage = "Up";
-          speak(`You are in the up position.`);
+          // speak(`You are in the up position.`);
         }
-        drawAngleArc(ctx, leftHip, leftKnee, leftAnkle, angle);
+        drawAngleArc(ctx, leftHip, leftKnee, leftAnkle, "left", angle);
       }
       break;
     default:
@@ -395,21 +400,24 @@ function calculateAngle(a, b, c) {
     Math.atan2(c.y - b.y, c.x - b.x) - Math.atan2(a.y - b.y, a.x - b.x);
   let angle = Math.abs((radians * 180.0) / Math.PI);
   if (angle > 180) angle = 360 - angle;
+  console.log("Angle:", angle);
   return angle;
 }
 
-function drawAngleArc(ctx, a, b, c, angle) {
+function drawAngleArc(ctx, a, b, c, bodyOrientation, angle) {
   const radius = 40;
   let startAngle, endAngle;
-  if (a.y < b.y) {
-    startAngle = Math.atan2(a.y - b.y, a.x - b.x);
-    endAngle = Math.atan2(c.y - b.y, c.x - b.x);
-  } else if (a.y > b.y) {
-    startAngle = Math.atan2(c.y - b.y, c.x - b.x);
-    endAngle = Math.atan2(a.y - b.y, a.x - b.x);
-  }
+  startAngle = Math.atan2(a.y - b.y, a.x - b.x);
+  endAngle = Math.atan2(c.y - b.y, c.x - b.x);
+  // if (a.y < b.y) {
+  //   startAngle = Math.atan2(a.y - b.y, a.x - b.x);
+  //   endAngle = Math.atan2(c.y - b.y, c.x - b.x);
+  // } else if (a.y > b.y) {
+  //   startAngle = Math.atan2(c.y - b.y, c.x - b.x);
+  //   endAngle = Math.atan2(a.y - b.y, a.x - b.x);
+  // }
   if (endAngle < startAngle) {
-    [startAngle, endAngle] = [endAngle, startAngle];
+    endAngle += 2 * Math.PI;
   }
   ctx.beginPath();
   ctx.arc(b.x, b.y, radius, startAngle, endAngle);
@@ -422,7 +430,20 @@ function drawAngleArc(ctx, a, b, c, angle) {
   ctx.scale(-1, 1); // Flip horizontally
   ctx.fillStyle = "yellow";
   ctx.font = "20px Arial";
-  ctx.fillText(`${Math.round(angle)}°`, -(b.x + (radius / 2) + 60), b.y - (radius / 2) + 20);
+
+  if (bodyOrientation === "right") {
+    ctx.fillText(
+      `${Math.round(angle)}°`,
+      -(b.x + radius / 2 + 60),
+      b.y - radius / 2 + 20
+    );
+  } else {
+    ctx.fillText(
+      `${Math.round(angle)}°`,
+      -(b.x + radius / 2 - 60),
+      b.y - radius / 2 + 20
+    );
+  }
   ctx.restore(); // Restore the original state
 }
 
