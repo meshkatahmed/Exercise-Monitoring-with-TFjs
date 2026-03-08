@@ -69,22 +69,26 @@ const fetchData = async () => {
     const data = await response.json();
     console.log("Data from FastAPI:", data);
   } catch (error) {
-    console.error("Error:", error);
+    if (error.message === "Failed to fetch") {
+      console.warn("Backend API not reachable. Ignoring fetch error for local frontend testing.");
+    } else {
+      console.error("API Fetch Error:", error);
+    }
   }
 };
 
 fetchData();
 
 // Text to Speech for voiceover
-// function speak(text) {
-//   if (isMuted) return;
-//   const synth = window.speechSynthesis;
-//   const utterance = new SpeechSynthesisUtterance(text);
-//   utterance.lang = "en-US";
-//   utterance.rate = 1;
-//   utterance.pitch = 1;
-//   synth.speak(utterance);
-// }
+function speak(text) {
+  if (isMuted) return;
+  const synth = window.speechSynthesis;
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "en-US";
+  utterance.rate = 1;
+  utterance.pitch = 1;
+  synth.speak(utterance);
+}
 
 // Voiceover Toggler
 voiceoverToggle.addEventListener("change", () => {
@@ -100,7 +104,7 @@ voiceoverToggle.addEventListener("change", () => {
 // Event listener for the change exercise
 exerciseDropdown.addEventListener("change", () => {
   selectedExercise = exerciseDropdown.value;
-  // speak(`Selected exercise is ${selectedExercise}`);
+  speak(`Selected exercise is ${selectedExercise}`);
   exercisePreview.src = exercisePreviewMap[selectedExercise];
   startButton.disabled = false;
   stopButton.disabled = true;
@@ -111,7 +115,7 @@ exerciseDropdown.addEventListener("change", () => {
   let textOnBoard = `See exercise preview on the right and read the instructions carefully`;
   pElement.innerText = textOnBoard;
   boardContainer.appendChild(pElement);
-  // speak(textOnBoard);
+  speak(textOnBoard);
 
   instructionsContainer.innerHTML = "";
   let instructions = exerciseInstructionsMap[selectedExercise];
@@ -120,7 +124,7 @@ exerciseDropdown.addEventListener("change", () => {
     pElement.className = "text-left";
     pElement.innerText = `${index + 1}) ${instruction}`;
     instructionsContainer.appendChild(pElement);
-    // speak(instruction);
+    speak(instruction);
   });
 });
 
@@ -169,7 +173,7 @@ async function initializeCamera() {
     // updateCanvasForMirroredVideoFeed();
 
     // Read Board
-    // speak(boardContainer.firstElementChild.innerText);
+    speak(boardContainer.firstElementChild.innerText);
   } catch (err) {
     console.error("Error accessing the webcam:", err);
     alert(
@@ -303,14 +307,14 @@ function calculateAngleAndCountReps(keypoints, ctx, exercise) {
         leftWrist.score > 0.2
       ) {
         angle = calculateAngle(leftShoulder, leftElbow, leftWrist);
-        if (angle > 150 && exerciseStage === "Up") {
+        if (angle > 150 && exerciseStage === "Down") {
+          exerciseStage = "Up";
+          speak(`You are in the up position.`);
+        }
+        if (angle < 90 && exerciseStage === "Up") {
           exerciseStage = "Down";
           repCount++;
-          // speak(`Good Job! Total repetitions: ${reps}. Keep going.`);
-        }
-        if (angle < 90 && exerciseStage === "Down") {
-          exerciseStage = "Up";
-          // speak(`You are in the up position.`);
+          speak(`Good Job! Total repetitions: ${repCount}. Keep going.`);
         }
         drawAngleArc(ctx, leftWrist, leftElbow, leftShoulder, "left", angle);
       }
@@ -322,14 +326,14 @@ function calculateAngleAndCountReps(keypoints, ctx, exercise) {
         rightWrist.score > 0.2
       ) {
         angle = calculateAngle(rightShoulder, rightElbow, rightWrist);
-        if (angle > 150 && exerciseStage === "Up") {
+        if (angle > 150 && exerciseStage === "Down") {
+          exerciseStage = "Up";
+          speak(`You are in the up position.`);
+        }
+        if (angle < 90 && exerciseStage === "Up") {
           exerciseStage = "Down";
           repCount++;
-          // speak(`Good Job! Total repetitions: ${reps}. Keep going.`);
-        }
-        if (angle < 90 && exerciseStage === "Down") {
-          exerciseStage = "Up";
-          // speak(`You are in the up position.`);
+          speak(`Good Job! Total repetitions: ${repCount}. Keep going.`);
         }
         drawAngleArc(
           ctx,
@@ -349,14 +353,14 @@ function calculateAngleAndCountReps(keypoints, ctx, exercise) {
         leftHip.score > 0.2
       ) {
         angle = calculateAngle(leftShoulder, leftElbow, leftWrist);
-        if (angle > 150 && exerciseStage === "Up") {
+        if (angle > 150 && exerciseStage === "Down") {
+          exerciseStage = "Up";
+          speak(`You are in the up position.`);
+        }
+        if (angle < 90 && exerciseStage === "Up") {
           exerciseStage = "Down";
           repCount++;
-          // speak(`Good Job! Total repetitions: ${reps}. Keep going.`);
-        }
-        if (angle < 90 && exerciseStage === "Down") {
-          exerciseStage = "Up";
-          // speak(`You are in the up position.`);
+          speak(`Good Job! Total repetitions: ${repCount}. Keep going.`);
         }
         drawAngleArc(ctx, leftWrist, leftElbow, leftShoulder, "left", angle);
       }
@@ -368,14 +372,14 @@ function calculateAngleAndCountReps(keypoints, ctx, exercise) {
         leftAnkle.score > 0.2
       ) {
         angle = calculateAngle(leftHip, leftKnee, leftAnkle);
-        if (angle > 150 && exerciseStage === "Up") {
+        if (angle > 150 && exerciseStage === "Down") {
+          exerciseStage = "Up";
+          speak(`You are in the up position.`);
+        }
+        if (angle < 90 && exerciseStage === "Up") {
           exerciseStage = "Down";
           repCount++;
-          // speak(`Good Job! Total repetitions: ${reps}. Keep going.`);
-        }
-        if (angle < 90 && exerciseStage === "Down") {
-          exerciseStage = "Up";
-          // speak(`You are in the up position.`);
+          speak(`Good Job! Total repetitions: ${repCount}. Keep going.`);
         }
         drawAngleArc(ctx, leftHip, leftKnee, leftAnkle, "left", angle);
       }
