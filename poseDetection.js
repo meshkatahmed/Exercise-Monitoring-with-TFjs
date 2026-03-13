@@ -226,6 +226,13 @@ async function startMonitoring() {
   }
 }
 
+// Add event listener to height input to clear alert when user types
+height.addEventListener("input", () => {
+  if (height.value) {
+    heightAlert.style.display = "none";
+  }
+});
+
 async function detectPose() {
   const ctx = canvas.getContext("2d");
 

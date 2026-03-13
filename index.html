@@ -50,7 +50,7 @@
 
     <main class="grid grid-cols-3 md:grid-cols-12 gap-8 p-6">
       <div class="col-span-1 md:col-span-3 w-full space-y-7">
-        <section class="bg-white rounded-lg shadow p-6 h-[320px]">
+        <section class="bg-white rounded-lg shadow p-6">
           <h2 class="text-xl font-bold mb-4">Provide Your Details</h2>
           <form id="processing-form">
             <label
@@ -97,16 +97,16 @@
               This field is required.
             </p>
           </form>
-          <div id="recording-controls" class="controls mt-4">
+          <div id="recording-controls" class="controls mt-4 flex space-x-4">
             <button
               id="start-monitoring"
-              class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none mr-2 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              class="w-1/2 px-2 py-2 whitespace-nowrap text-sm md:text-base bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               Start Monitoring
             </button>
             <button
               id="stop-monitoring"
-              class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none disabled:bg-gray-400 disabled:cursor-not-allowed"
+              class="w-1/2 px-2 py-2 whitespace-nowrap text-sm md:text-base bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none disabled:bg-gray-400 disabled:cursor-not-allowed"
               disabled
             >
               Stop Monitoring
@@ -116,7 +116,7 @@
         <!-- items-center justify-center  -->
         <section
           id="board-container"
-          class="bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg shadow-lg p-8 h-[300px] flex flex-col text-white space-y-4 border border-blue-300"
+          class="bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg shadow-lg p-6 h-[250px] flex flex-col justify-center text-white space-y-4 border border-blue-300"
         >
           <p>Enter your height above and select an exercise from the menu</p>
         </section>
@@ -124,7 +124,7 @@
 
       <div class="col-span-1 md:col-span-6 w-full space-y-7">
         <section
-          class="bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center h-[648px]"
+          class="bg-white rounded-lg shadow px-6 py-10 flex flex-col items-center justify-center"
         >
           <div
             class="relative border-2 border-gray-800 rounded shadow"
@@ -152,12 +152,11 @@
               id="exercise-preview"
               alt="Exercise Preview GIF"
               src="https://cdn.deepmindlabs.ai/images/rom/LeftandRightElbowFlexion.gif"
-              class="h-[350px] mx-auto"
+              class="h-[280px] mx-auto"
             />
           </div>
-          <h2 class="text-left">Instructions:</h2>
-          <br />
-          <div id="instructions-container">
+          <h2 class="text-left mt-4">Instructions:</h2>
+          <div id="instructions-container" class="mt-2">
             <p class="text-left text-700">
               1) Make sure that your whole body is visible.
             </p>
@@ -168,9 +167,12 @@
     <script type="module" src="poseDetection.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-          const accessToken = Cookies.get('accessToken');
+          let accessToken = Cookies.get('accessToken');
           if (!accessToken) {
-            window.location.href = 'login.html'; // Redirect to the login page
+            // Automatically bypass login for portfolio deployment
+            Cookies.set('accessToken', 'dummy', { expires: 1, path: '/' });
+            accessToken = 'dummy';
+            console.log('Login bypassed for portfolio viewer.');
           }
     
           // Logout button functionality
@@ -180,6 +182,6 @@
             window.location.href = 'login.html'; // Redirect to the login page
           });
         });
-      </script>
+    </script>
   </body>
 </html>
